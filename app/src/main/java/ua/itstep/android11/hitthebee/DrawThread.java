@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 /**
@@ -19,36 +20,46 @@ public class DrawThread extends Thread {
 
 
     public DrawThread(SurfaceHolder surfaceHolder, Resources resources) {
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" Constructor" );
+
         this.surfaceHolder = surfaceHolder;
         picture = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher);
 
     }
 
-    public void setRunning(boolean run) {
+    void setRunning(boolean run) {
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" setRunning" );
         runFlag = run;
     }
 
 
     @Override
     public void run() {
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" run" );
+
         Canvas canvas;
+        float left = 3.0f;
+        float top = 3.0f;
 
         while (runFlag) {
-            canvas = null;
-            try {
                 // получаем объект Canvas и выполняем отрисовку
-                canvas = surfaceHolder.lockCanvas(null);
-                synchronized (surfaceHolder) {
-                    canvas.drawColor(Color.RED);
-                    canvas.drawBitmap(picture, null, null);
-                }
-            }
-            finally {
+                canvas = surfaceHolder.lockCanvas();
+
                 if (canvas != null) {
+                    synchronized (surfaceHolder) {
+                        canvas.drawColor(Color.RED);
+                        canvas.drawBitmap(picture, left, top, null);
+                    }
+
                     // отрисовка выполнена. выводим результат на экран
                     surfaceHolder.unlockCanvasAndPost(canvas);
+
+                } else {
+                    if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" canvas = NULL" );
                 }
-            }
+
+
+
         }
 
     }
