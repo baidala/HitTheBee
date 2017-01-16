@@ -16,10 +16,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GameBoardActivity"
+            android:name=".GameBoardActivityOld"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_board"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".GameBoardActivity"></activity>
     </application>
 
 </manifest>
