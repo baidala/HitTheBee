@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">HitTheBee</string>
+    <string name="btn_start_title">Star</string>
+    <string name="btn_exit_title">Exit</string>
+
+    <string name="title_activity_game_board">GameBoardActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
