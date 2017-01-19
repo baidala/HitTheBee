@@ -1,9 +1,21 @@
 <resources>
-    <string name="app_name">HitTheBee</string>
-    <string name="btn_start_title">Star</string>
+    <string name="app_name">Hit The Bee</string>
+    <string name="btn_start_title">Start</string>
     <string name="btn_exit_title">Exit</string>
 
     <string name="title_activity_game_board">GameBoardActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="mode_ready">Hit The Bee\nPress Up To Play</string>
+    <string name="mode_pause">Paused\nPress Up To Resume</string>
+    <string name="mode_lose">Game Over\nPress Up To Play</string>
+    <string name="mode_win_prefix">Success!\n</string>
+    <string name="mode_win_suffix">in a row\nPress Up to Play</string>
+
+    <string name="message_stopped">Stopped</string>
+    <string name="message_off_pad">Off Landing Pad</string>
+    <string name="message_too_fast">Too Fast</string>
+    <string name="message_bad_angle">Bad Angle</string>
+
 </resources>

@@ -8,7 +8,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnStar;
+    Button btnStart;
     Button btnExit;
 
     @Override
@@ -16,10 +16,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnStar = (Button) findViewById(R.id.btnStar);
+        btnStart = (Button) findViewById(R.id.btnStart);
         btnExit = (Button) findViewById(R.id.btnExit);
 
-        btnStar.setOnClickListener(this);
+        btnStart.setOnClickListener(this);
         btnExit.setOnClickListener(this);
 
     }
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.btnStar:
+            case R.id.btnStart:
                 Intent intent = new Intent(getApplicationContext(), GameBoardActivity.class);
                 startActivity(intent);
                 break;
