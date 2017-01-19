@@ -81,13 +81,6 @@ public class DrawThread extends Thread {
     private int REFRESH_STEP_MILLIS = 300;
 
 
-
-
-
-
-
-
-
     DrawThread(SurfaceHolder surfaceHolder,  Context context, Handler handler) {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" Constructor" );
 
@@ -101,6 +94,7 @@ public class DrawThread extends Thread {
 
 
         //create all objects: 1 queen, 5 workers, 8 drones
+
 
         //create array of the objects
 
@@ -169,7 +163,7 @@ public class DrawThread extends Thread {
         beeSpriteHeight = beeImageButton.getHeight();
         */
 
-        scratchRectF = new RectF(0, 0, 50, 90); //(100.0f, 100.0f, 200.0f,200.0f); //left, topI, right, bottom
+        scratchRectF = new RectF(0, 0, 0, 0); //(100.0f, 100.0f, 200.0f,200.0f); //left, topI, right, bottom
 
 
 
@@ -243,6 +237,7 @@ public class DrawThread extends Thread {
             //imageButton.setImageResource(R.drawable.bee_worker_selector);
             //imageButton.setBackground(beeImage);
 
+            //scratchRectF.set();
 
             // pick a convenient initial location for the sprite
             beeSpriteCenterX = canvasWidth / 2;
@@ -389,6 +384,7 @@ public class DrawThread extends Thread {
 
         beeImage.draw(canvas);
 
+        scratchRectF.centerX();
 
         //canvas.drawBitmap(beeImage, left, top, paint);
         canvas.drawRect(scratchRectF, rectPaint);
