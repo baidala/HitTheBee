@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.ViewGroup;
 
 /**
  * Created by Maksim Baydala on 16/01/17.
@@ -73,15 +72,17 @@ public class DrawThread extends Thread {
     private int beeSpriteWidth;
     private int beeSpriteHeight;
 
-    private int yTop;
-    private int xLeft;
 
     private boolean horizontal;
     private boolean vertical;
 
+    /** Used to figure out elapsed time between frames */
+    private long nextRefreshTime;
+    private int REFRESH_STEP_MILLIS = 300;
 
 
-    private ViewGroup.LayoutParams layoutParams;
+
+
 
 
 
@@ -97,6 +98,7 @@ public class DrawThread extends Thread {
         Resources res = context.getResources();
         message = "";
         winsInARow = 0;
+
 
         //create all objects: 1 queen, 5 workers, 8 drones
 
@@ -179,8 +181,9 @@ public class DrawThread extends Thread {
         beeSpriteCenterX = beeSpriteWidth;
         beeSpriteCenterY = beeSpriteHeight * 2;
 
-        horizontal = Math.round(Math.random()) == 0;
-        vertical = Math.round(Math.random()) == 0;
+        nextRefreshTime = System.currentTimeMillis();
+
+
 
 
 
@@ -206,6 +209,7 @@ public class DrawThread extends Thread {
                         synchronized (runLock) {
                             if (runFlag) doDraw(canvas);
                         }
+
                     }
                     // отрисовка выполнена. выводим результат на экран
                     surfaceHolder.unlockCanvasAndPost(canvas);
@@ -241,8 +245,17 @@ public class DrawThread extends Thread {
 
 
             // pick a convenient initial location for the sprite
+            beeSpriteCenterX = canvasWidth / 2;
+            beeSpriteCenterY = canvasHeight / 2;
+
+            beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
+            beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
 
 
+            beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
+
+
+            nextRefreshTime = System.currentTimeMillis() + REFRESH_STEP_MILLIS;
 
 
             setGameState(STATE_RUNNING);
@@ -312,6 +325,8 @@ public class DrawThread extends Thread {
             beeImage.setState(new int[]{android.R.attr.state_pressed});
             flag = true;
 
+            if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" touchItem HIT" );
+
         }
 
         return flag;
@@ -321,10 +336,13 @@ public class DrawThread extends Thread {
     public boolean releaseTouch() {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" releaseTouch" );
 
+        beeImage.setState(new int[]{-android.R.attr.state_pressed});
+        /*
         if ( (beeImage.getState())[0] == android.R.attr.state_pressed ){
             beeImage.setState(new int[]{-android.R.attr.state_pressed});
 
         }
+        */
 
         return true;
     }
@@ -357,10 +375,6 @@ public class DrawThread extends Thread {
         //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw" );
 
 
-        float left = 30.0f;
-        float top = 30.0f;
-
-
 
         canvas.drawColor(Color.RED);
 
@@ -372,6 +386,7 @@ public class DrawThread extends Thread {
         //beeImageButton.draw(canvas);
 
         //beeImage.setBounds(xLeft, yTop, xLeft + beeSpriteWidth, yTop + beeSpriteHeight);
+
         beeImage.draw(canvas);
 
 
@@ -394,30 +409,40 @@ public class DrawThread extends Thread {
         //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" updatePhysics" );
         long now = System.currentTimeMillis();
 
+        if ( nextRefreshTime > now ) return;
+
         //move direction
         horizontal = Math.round(Math.random()) == 0;
         vertical = Math.round(Math.random()) == 0;
 
-        beeSpriteCenterX += ( horizontal ? 5 : -5 );
-        if( beeSpriteCenterX >= ( canvasWidth - beeSpriteWidth) ) {
+        //choose random x y
+        beeSpriteCenterX += ( horizontal ? 20 : -20 );
+        if( beeSpriteCenterX >= canvasWidth ) {
+            beeSpriteCenterX = canvasWidth - beeSpriteWidth / 2 ;
             horizontal = false;
         } else if ( beeSpriteCenterX <= 0 ) {
+            beeSpriteCenterX = beeSpriteWidth / 2 ;
             horizontal = true;
         }
 
-        beeSpriteCenterY += ( vertical ? 5 : -5 );
-        if( beeSpriteCenterY >= ( canvasHeight - beeSpriteHeight) ) {
+        beeSpriteCenterY += ( vertical ? 30 : -30 );
+        if( beeSpriteCenterY >= canvasHeight ) {
+            beeSpriteCenterY = canvasHeight - beeSpriteHeight / 2 ;
             vertical = false;
-        } else if ( beeSpriteCenterX <= 0 ) {
+        } else if ( beeSpriteCenterY <= 0 ) {
+            beeSpriteCenterY = beeSpriteHeight / 2 ;
             vertical = true;
         }
 
 
-        beeSpriteYTop = canvasHeight - ((int) beeSpriteCenterY + beeSpriteHeight / 2);
+        beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
         beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
 
         beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
 
+        this.releaseTouch();
+
+        nextRefreshTime = now + REFRESH_STEP_MILLIS;;
 
         int result = STATE_WIN;
 

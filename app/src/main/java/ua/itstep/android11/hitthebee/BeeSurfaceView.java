@@ -109,6 +109,7 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" surfaceCreated" );
 
         if (drawThread != null) {
+            drawThread.setSurfaceSize(this.getRight(), this.getBottom());
             //drawThread.setDaemon(true);
             //drawThread.setState(DrawThread.STATE_READY);
             drawThread.setFlagRunning(true);
