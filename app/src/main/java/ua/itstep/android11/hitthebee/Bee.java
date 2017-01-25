@@ -139,7 +139,6 @@ public abstract class Bee {
 
     public void draw(Canvas canvas)
     {
-
         if( isDead() ) {
             deadImage.draw(canvas);
         } else {
