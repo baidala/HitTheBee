@@ -75,6 +75,7 @@ public abstract class Bee {
         beeRect = beeImage.getBounds();
 
         return beeRect.contains(x, y);
+
         //return startX <= x && endX > x && startY <= y && endY > y;
 
          //beeImageYTop < beeImageYBottom && beeImageXLeft < beeImageXRight  &&// check for empty first

@@ -257,6 +257,7 @@ public class DrawThread extends Thread {
             if ( ! randomBeeChoose() ) {
                 Toast.makeText(context, R.string.message_game_over, Toast.LENGTH_SHORT).show();
                 setGameState(STATE_WIN); //exit
+                return;
             }
 
             //increment level
