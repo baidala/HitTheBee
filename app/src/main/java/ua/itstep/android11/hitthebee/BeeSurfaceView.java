@@ -28,9 +28,17 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
     private SurfaceHolder holder;
     private GestureDetector gestureDetector;
 
+    private static final int GAME_OVER = 5;
+
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message m) {
+            if ( m.getData().getInt("STATE") == GAME_OVER){
+                // завершаем работу потока
+                drawThread.setFlagRunning(false);
+
+
+            }
 
         }
     };
@@ -39,7 +47,7 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
         public boolean onDown(MotionEvent event) {
             boolean flag = false;
-            if (drawThread.touchItem(event.getX(), event.getY())) {
+            if (drawThread.touchItem((int)event.getX(), (int)event.getY())) {
                 //invalidate();
                 flag = true;
                 //resetTouchFeedback();
@@ -159,8 +167,8 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
 
 
-        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onTouchEvent "+ action + " at x=" + event.getX() +
-               ", y=" + event.getY());
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onTouchEvent "+ action + " at x=" + (int)event.getX() +
+               ", y=" + (int)event.getY());
 
         return super.onTouchEvent(event) || this.gestureDetector.onTouchEvent(event);
 
