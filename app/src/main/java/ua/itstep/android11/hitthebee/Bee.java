@@ -94,7 +94,12 @@ public abstract class Bee {
         beeImageYBottom = beeImageYTop + beeImageHeight;
 
 
-        beeImage.setBounds(beeImageXLeft, beeImageYTop, beeImageXRight, beeImageYBottom);
+        if( isDead() ) {
+            deadImage.setBounds(beeImageXLeft, beeImageYTop, beeImageXRight, beeImageYBottom);
+        } else {
+            beeImage.setBounds(beeImageXLeft, beeImageYTop, beeImageXRight, beeImageYBottom);
+        }
+
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" setPosition beeImageXLeft=" +beeImageXLeft +" beeImageYTop="+ beeImageYTop +" beeImageXRight="+ beeImageXRight +" beeImageYBottom="+ beeImageYBottom);
     }
 
@@ -136,6 +141,10 @@ public abstract class Bee {
 
     public final int getUnitType() {
         return unitType;
+    }
+
+    public final int getHitPoints(){
+        return hitPoints;
     }
 
     public void draw(Canvas canvas)

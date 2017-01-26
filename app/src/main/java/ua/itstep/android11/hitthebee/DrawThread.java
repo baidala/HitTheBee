@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
@@ -40,12 +41,12 @@ public class DrawThread extends Thread {
     private Drawable queenImage;
 
     //private ImageButton beeImageButton;
-    private Paint paint;
-    private Paint rectPaint;
+    //private Paint paint;
+    //private Paint rectPaint;
     private Handler handler;
     private Context context;
     private final Object runLock = new Object();
-    private RectF scratchRectF;
+    //private RectF scratchRectF;
     private CharSequence message;
 
     // The state of the game. One of READY, RUNNING, PAUSE, LOSE, or WIN
@@ -169,10 +170,10 @@ public class DrawThread extends Thread {
 
 
         //set default image
-        Bitmap beeImage = BitmapFactory.decodeResource(res, R.drawable.bee_queen);
-        int w = beeImage.getWidth();
+        //Bitmap beeImage = BitmapFactory.decodeResource(res, R.drawable.bee_queen);
+        //int w = beeImage.getWidth();
 
-        Rect rect = workerImage.getBounds();
+        //Rect rect = workerImage.getBounds();
         //rect.contains()
 
 
@@ -180,18 +181,18 @@ public class DrawThread extends Thread {
         //beeSpriteHeight = beeImage.getIntrinsicHeight();
 
 
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        //paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        rectPaint.setColor(Color.WHITE);
-
-
+        //rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        //rectPaint.setColor(Color.WHITE);
 
 
 
 
 
-        scratchRectF = new RectF(0, 0, 0, 0); //(100.0f, 100.0f, 200.0f,200.0f); //left, topI, right, bottom
+
+
+        //scratchRectF = new RectF(0, 0, 0, 0); //(100.0f, 100.0f, 200.0f,200.0f); //left, topI, right, bottom
 
 
 
@@ -256,7 +257,7 @@ public class DrawThread extends Thread {
 
             if ( ! randomBeeChoose() ) {
                 Toast.makeText(context, R.string.message_game_over, Toast.LENGTH_SHORT).show();
-                setGameState(STATE_WIN); //exit
+                //setGameState(STATE_WIN); //exit
                 return;
             }
 
@@ -544,9 +545,12 @@ public class DrawThread extends Thread {
 
 
     private void doDraw(Canvas canvas) {
-        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw" );
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw" );
         int left = PADDING;
         int top = PADDING;
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.WHITE);
 
 
 
@@ -556,6 +560,7 @@ public class DrawThread extends Thread {
 
         //draw the bee on the board
         beeArray[arrayIndex].draw(canvas);
+
 
         //draw toolbar/icons
         int maxIcones = canvasWidth / (beeIconeWidth + PADDING);
@@ -567,21 +572,29 @@ public class DrawThread extends Thread {
             }
             beeArray[i].drawIcon(canvas, left, top, null);
             left += beeIconeWidth + PADDING;
-
-
         }
 
-        top = beeIconeHeight + beeIconeHeight + PADDING + PADDING + PADDING + (beeSpriteHeight/2);
+        //draw text near icons
+        top += (beeIconeHeight/2);
+        left *= 2;
+
+        StringBuilder str = new StringBuilder();
+        str.append(context.getString(R.string.hp_title));
+        str.append( beeArray[arrayIndex].getHitPoints() );
+
+        String hitPoints = str.toString();
+
+        canvas.drawText(hitPoints, 0, hitPoints.length(), left, top, paint);
 
 
-        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw  top=" + top );
+        //top = beeIconeHeight + beeIconeHeight + PADDING + PADDING + PADDING + (beeSpriteHeight/2);
+        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw  top=" + top );
 
-        Paint pnt = new Paint();
-        pnt.setColor(Color.WHITE);
-        canvas.drawLine(boardLeft, boardTop, (boardLeft+boardWidth), boardTop, pnt);
-        canvas.drawLine(boardLeft, boardTop, boardLeft, (boardTop+boardHeight), pnt);
-        canvas.drawLine(boardLeft, (boardTop+boardHeight), (boardLeft+boardWidth), (boardTop+boardHeight), pnt);
-        canvas.drawLine((boardLeft+boardWidth), boardTop, (boardLeft+boardWidth), (boardTop+boardHeight), pnt);
+
+        canvas.drawLine(boardLeft, boardTop, (boardLeft+boardWidth), boardTop, paint);
+        canvas.drawLine(boardLeft, boardTop, boardLeft, (boardTop+boardHeight), paint);
+        canvas.drawLine(boardLeft, (boardTop+boardHeight), (boardLeft+boardWidth), (boardTop+boardHeight), paint);
+        canvas.drawLine((boardLeft+boardWidth), boardTop, (boardLeft+boardWidth), (boardTop+boardHeight), paint);
 
         //Rect rectImg = new Rect(xLeft, yTop, xLeft + beeSpriteWidth, yTop + beeSpriteHeight);
         //beeImageButton.bringToFront();
