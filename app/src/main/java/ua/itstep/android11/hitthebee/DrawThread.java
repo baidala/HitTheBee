@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
 
+import java.util.Random;
+
 /**
  * Created by Maksim Baydala on 16/01/17.
  */
@@ -460,7 +462,21 @@ public class DrawThread extends Thread {
     private boolean randomBeeChoose() {
 
         //TODO
-        boolean choose;
+        boolean choose = false;
+        int min = 0;
+        int max = ARRAY_SIZE - 1;
+
+        Random r = new Random();
+
+        while( !choose ){
+            arrayIndex = r.nextInt((max - min) + 1) + min;
+            choose = !beeArray[arrayIndex].isDead();
+        }
+
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose arrayIndex=" + arrayIndex);
+
+
+        /*
         arrayIndex -= 1;
 
         if( arrayIndex >= 0 ) {
@@ -470,8 +486,7 @@ public class DrawThread extends Thread {
             choose = false;
 
         }
-
-
+        */
 
         return choose;
     }
