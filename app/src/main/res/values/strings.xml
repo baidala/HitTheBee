@@ -20,6 +20,7 @@
     <string name="message_game_over">Game Over</string>
     <string name="message_start">Starting New Game</string>
     <string name="hp_title">HP: </string>
+    <string name="alert_message_positiv">OK</string>
 
 
 </resources>

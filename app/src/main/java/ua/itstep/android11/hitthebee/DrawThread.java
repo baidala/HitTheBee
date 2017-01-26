@@ -1,6 +1,9 @@
 package ua.itstep.android11.hitthebee;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -316,7 +319,22 @@ public class DrawThread extends Thread {
     }
 
     private void resetGame() {
-        Toast.makeText(context, R.string.message_start, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, R.string.message_start, Toast.LENGTH_SHORT).show();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(context.getResources().getString(R.string.message_start))
+               .setPositiveButton(R.string.alert_message_positiv, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +"Positiv" );
+
+                    }
+                }) ;
+
+        Dialog dialog = builder.create();
+        dialog.show();
+
+
 
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" resetGame" );
 
