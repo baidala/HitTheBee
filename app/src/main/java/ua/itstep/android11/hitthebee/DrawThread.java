@@ -264,7 +264,7 @@ public class DrawThread extends Thread {
 
             if ( ! hasNext ) {
                 Toast.makeText(context, R.string.mode_win_prefix, Toast.LENGTH_SHORT).show();
-                setGameState(STATE_WIN);
+                //setGameState(STATE_WIN);
                 resetGame();
 
             } else {
@@ -318,6 +318,8 @@ public class DrawThread extends Thread {
     private void resetGame() {
         Toast.makeText(context, R.string.message_start, Toast.LENGTH_SHORT).show();
 
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" resetGame" );
+
         //resetHP
 
         /*
@@ -334,6 +336,8 @@ public class DrawThread extends Thread {
         message = "";
         arrayIndex = 0;
         round = 0;
+
+        setGameState(STATE_RUNNING);
 
         doStart();
 
@@ -369,11 +373,11 @@ public class DrawThread extends Thread {
 
 
             if (gameMode == STATE_WIN) {
-                Message message = handler.obtainMessage();
-                Bundle b = new Bundle();
-                b.putInt("STATE", STATE_WIN);
-                message.setData(b);
-                handler.sendMessage(message);
+                //Message message = handler.obtainMessage();
+                //Bundle b = new Bundle();
+                //b.putInt("STATE", STATE_WIN);
+                //message.setData(b);
+                //handler.sendMessage(message);
 
 
 
@@ -492,19 +496,28 @@ public class DrawThread extends Thread {
     //random choose the bee/object from the array
     private boolean randomBeeChoose() {
 
-        //TODO
-        boolean choose = false;
+        boolean choose = true;
         int min = 0;
         int max = ARRAY_SIZE - 1;
 
         Random r = new Random();
 
+        /*
         while( !choose ){
             arrayIndex = r.nextInt((max - min) + 1) + min;
             choose = !beeArray[arrayIndex].isDead();
         }
+        */
 
-        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose arrayIndex=" + arrayIndex);
+        for( int i = 0; choose && (i < ARRAY_SIZE); i++ ){
+            arrayIndex = r.nextInt((max - min) + 1) + min;
+            choose = beeArray[arrayIndex].isDead();
+            if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose choose=" + choose);
+            if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose arrayIndex=" + arrayIndex);
+
+        }
+
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose ends arrayIndex=" + arrayIndex);
 
 
         /*
@@ -519,7 +532,7 @@ public class DrawThread extends Thread {
         }
         */
 
-        return choose;
+        return !choose;
     }
 
 
@@ -581,7 +594,7 @@ public class DrawThread extends Thread {
 
         nextRefreshTime = now + REFRESH_STEP_MILLIS;;
 
-        int result = STATE_WIN;
+
 
 
         //doStart();
@@ -633,10 +646,10 @@ public class DrawThread extends Thread {
         //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw  top=" + top );
 
 
-        canvas.drawLine(boardLeft, boardTop, (boardLeft+boardWidth), boardTop, paint);
-        canvas.drawLine(boardLeft, boardTop, boardLeft, (boardTop+boardHeight), paint);
-        canvas.drawLine(boardLeft, (boardTop+boardHeight), (boardLeft+boardWidth), (boardTop+boardHeight), paint);
-        canvas.drawLine((boardLeft+boardWidth), boardTop, (boardLeft+boardWidth), (boardTop+boardHeight), paint);
+        //canvas.drawLine(boardLeft, boardTop, (boardLeft+boardWidth), boardTop, paint);
+        //canvas.drawLine(boardLeft, boardTop, boardLeft, (boardTop+boardHeight), paint);
+        //canvas.drawLine(boardLeft, (boardTop+boardHeight), (boardLeft+boardWidth), (boardTop+boardHeight), paint);
+        //canvas.drawLine((boardLeft+boardWidth), boardTop, (boardLeft+boardWidth), (boardTop+boardHeight), paint);
 
         //Rect rectImg = new Rect(xLeft, yTop, xLeft + beeSpriteWidth, yTop + beeSpriteHeight);
         //beeImageButton.bringToFront();
