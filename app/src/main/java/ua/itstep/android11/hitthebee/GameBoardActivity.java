@@ -28,7 +28,7 @@ public class GameBoardActivity extends AppCompatActivity {
         }
 
         beeSurfaceView = (BeeSurfaceView)findViewById(R.id.vBeeSurface);
-        //drawThread = beeSurfaceView.getThread();
+
 
         beeSurfaceView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN

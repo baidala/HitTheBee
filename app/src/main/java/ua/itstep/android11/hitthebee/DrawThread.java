@@ -4,20 +4,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
@@ -33,27 +28,9 @@ public class DrawThread extends Thread {
     private boolean runFlag = false;
     private SurfaceHolder surfaceHolder;
 
-    private Bitmap workerIcon;
-    private Bitmap workerIconHit;
-    private Bitmap queenIcon;
-    private Bitmap queenIconHit;
-    private Bitmap droneIcon;
-    private Bitmap droneIconHit;
-
-
-    private Drawable deadImage;
-    private Drawable workerImage;
-    private Drawable droneImage;
-    private Drawable queenImage;
-
-    //private ImageButton beeImageButton;
-    //private Paint paint;
-    //private Paint rectPaint;
     private Handler handler;
     private Context context;
     private final Object runLock = new Object();
-    //private RectF scratchRectF;
-    private CharSequence message;
 
     // The state of the game. One of READY, RUNNING, PAUSE, LOSE, or WIN
     private int gameMode = 0;
@@ -76,15 +53,10 @@ public class DrawThread extends Thread {
     private int canvasHeight = 1;
     private int canvasWidth = 1;
 
-    //boardHeight = canvasHeight - toolbar/icons
-    //boardWidth = canvasWidth - PADDING*2
     private int boardLeft = 1;
     private int boardTop = 1;
     private int boardHeight = 1;
     private int boardWidth = 1;
-
-    private int beeSpriteXLeft = 1;
-    private int beeSpriteYTop = 1;
 
     private int beeSpriteWidth = 1;
     private int beeSpriteHeight = 1;
@@ -102,10 +74,6 @@ public class DrawThread extends Thread {
     private long nextRefreshTime = 0;
     private static final int REFRESH_STEP_MILLIS = 300;
 
-    private Queen beeQueen;
-    private Drone beeDrone;
-    private Worker beeWorker;
-
     private int arrayIndex = 0;
 
     private Bee[] beeArray;
@@ -121,32 +89,31 @@ public class DrawThread extends Thread {
         this.handler = handler;
 
         Resources res = context.getResources();
-        message = "";
         arrayIndex = 0;
         round = 0;
 
 
         //cashe drawables
-        workerImage = res.getDrawable(R.drawable.bee_worker_selector);
+        Drawable workerImage = res.getDrawable(R.drawable.bee_worker_selector);
         workerImage.setState( new int[] { -android.R.attr.state_pressed } );
 
-        droneImage = res.getDrawable(R.drawable.bee_drone_selector);
+        Drawable droneImage = res.getDrawable(R.drawable.bee_drone_selector);
         droneImage.setState( new int[] { -android.R.attr.state_pressed } );
 
-        queenImage = res.getDrawable(R.drawable.bee_queen_selector);
+        Drawable queenImage = res.getDrawable(R.drawable.bee_queen_selector);
         queenImage.setState( new int[] { -android.R.attr.state_pressed } );
 
-        deadImage = res.getDrawable(R.drawable.bee_dead);
+        Drawable deadImage = res.getDrawable(R.drawable.bee_dead);
 
         //cashe icons
-        droneIcon = BitmapFactory.decodeResource(res, R.drawable.bee_drone_icon);
-        droneIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_drone_hit_icon);
+        Bitmap droneIcon = BitmapFactory.decodeResource(res, R.drawable.bee_drone_icon);
+        Bitmap droneIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_drone_hit_icon);
 
-        workerIcon = BitmapFactory.decodeResource(res, R.drawable.bee_worker_icon);
-        workerIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_worker_hit_icon);
+        Bitmap workerIcon = BitmapFactory.decodeResource(res, R.drawable.bee_worker_icon);
+        Bitmap workerIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_worker_hit_icon);
 
-        queenIcon = BitmapFactory.decodeResource(res, R.drawable.bee_queen_icon);
-        queenIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_queen_hit_icon);
+        Bitmap queenIcon = BitmapFactory.decodeResource(res, R.drawable.bee_queen_icon);
+        Bitmap queenIconHit = BitmapFactory.decodeResource(res, R.drawable.bee_queen_hit_icon);
 
         beeIconeHeight = queenIcon.getHeight();
         beeIconeWidth = queenIcon.getWidth();
@@ -155,71 +122,28 @@ public class DrawThread extends Thread {
         beeArray = new Bee[ARRAY_SIZE];
 
         //create all objects: 1 queen, 5 workers, 8 drones
-        beeQueen = new Queen(queenImage, queenIcon, queenIconHit, deadImage);
+        Queen beeQueen = new Queen(queenImage, queenIcon, queenIconHit, deadImage);
         beeArray[arrayIndex] = beeQueen;
         arrayIndex++;
 
         for(int i = 0; i < 5; i++) {
-            beeWorker = new Worker(workerImage, workerIcon, workerIconHit, deadImage);
+            Worker beeWorker = new Worker(workerImage, workerIcon, workerIconHit, deadImage);
             beeArray[arrayIndex] = beeWorker;
             beeQueen.addObserver(beeWorker);
             arrayIndex++;
         }
 
         for(int i = 0; i < 8; i++) {
-            beeDrone = new Drone(droneImage, droneIcon, droneIconHit, deadImage);
+            Drone beeDrone = new Drone(droneImage, droneIcon, droneIconHit, deadImage);
             beeArray[arrayIndex] = beeDrone;
             beeQueen.addObserver(beeDrone);
             arrayIndex++;
         }
 
-
-
-
-
-
-
-        //set default image
-        //Bitmap beeImage = BitmapFactory.decodeResource(res, R.drawable.bee_queen);
-        //int w = beeImage.getWidth();
-
-        //Rect rect = workerImage.getBounds();
-        //rect.contains()
-
-
-        //beeSpriteWidth = beeImage.getIntrinsicWidth();
-        //beeSpriteHeight = beeImage.getIntrinsicHeight();
-
-
-        //paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        //rectPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        //rectPaint.setColor(Color.WHITE);
-
-
-
-
-
-
-
-        //scratchRectF = new RectF(0, 0, 0, 0); //(100.0f, 100.0f, 200.0f,200.0f); //left, topI, right, bottom
-
-
-
-
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" beeSpriteWidth:" + beeSpriteWidth);
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" beeSpriteHeight:" + beeSpriteHeight);
 
-        //initial sprite location
-        //beeSpriteCenterX = beeSpriteWidth;
-        //beeSpriteCenterY = beeSpriteHeight * 2;
-
         nextRefreshTime = System.currentTimeMillis();
-
-
-
-
-
     }
 
 
@@ -259,7 +183,7 @@ public class DrawThread extends Thread {
      * Starts the game, next round, set parameters
      */
     public void doStart() {
-        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doStart" );
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doStart" );
         boolean hasNext = randomBeeChoose();
 
         synchronized (surfaceHolder) {
@@ -284,16 +208,6 @@ public class DrawThread extends Thread {
                 //init  toolbar/icons
                 setBoardSize();
 
-
-                //scratchRectF.set(330.0f, 100.0f, 400.0f, 200.0f);
-                //beeImage.setState( new int[] { -android.R.attr.state_pressed } );
-
-                //imageButton.setImageResource(R.drawable.bee_worker_selector);
-                //imageButton.setBackground(beeImage);
-
-                //scratchRectF.set();
-
-
                 beeSpriteWidth = beeArray[arrayIndex].getWidth();
                 beeSpriteHeight = beeArray[arrayIndex].getHeight();
 
@@ -302,13 +216,6 @@ public class DrawThread extends Thread {
                 beeSpriteCenterY = (canvasHeight / 2) - beeSpriteHeight;
 
                 beeArray[arrayIndex].setPosition(beeSpriteCenterX, beeSpriteCenterY);
-
-                //beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
-                //beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
-
-
-                //beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
-
 
                 nextRefreshTime = System.currentTimeMillis() + REFRESH_STEP_MILLIS;
 
@@ -319,7 +226,6 @@ public class DrawThread extends Thread {
     }
 
     private void resetGame() {
-        //Toast.makeText(context, R.string.message_start, Toast.LENGTH_SHORT).show();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(context.getResources().getString(R.string.message_start))
@@ -339,19 +245,10 @@ public class DrawThread extends Thread {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" resetGame" );
 
         //resetHP
-
-        /*
-        for(int i = 0; i < ARRAY_SIZE; i++) {
-            beeArray[i].reset();
-
-        }
-        */
-
         for (Bee beeUnit : beeArray) {
             beeUnit.reset();
         }
 
-        message = "";
         arrayIndex = 0;
         round = 0;
 
@@ -384,57 +281,11 @@ public class DrawThread extends Thread {
     }
 
     public void setGameState(int mode, CharSequence msg) {
-        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" setState" );
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" setState" );
 
         synchronized (surfaceHolder) {
             gameMode = mode;
 
-
-            if (gameMode == STATE_WIN) {
-                //Message message = handler.obtainMessage();
-                //Bundle b = new Bundle();
-                //b.putInt("STATE", STATE_WIN);
-                //message.setData(b);
-                //handler.sendMessage(message);
-
-
-
-            }
-
-
-            /*
-            if (gameMode == STATE_RUNNING) {
-
-            } else {
-                Resources res = context.getResources();
-                StringBuilder str = new StringBuilder();
-
-                if (msg != null) {
-                    str.append( msg );
-                    str.append( "\n" );
-                }
-
-                if (gameMode == STATE_READY)
-                    str.append( res.getText(R.string.mode_ready) ) ;
-                else if (gameMode == STATE_PAUSE)
-                    str.append( res.getText(R.string.mode_pause) );
-                else if (gameMode == STATE_LOSE)
-                    str.append( res.getText(R.string.mode_lose) );
-                else if (gameMode == STATE_WIN) {
-                    str.append(res.getString(R.string.mode_win_prefix));
-                    str.append(winsInARow);
-                    str.append(" ");
-                    str.append(res.getString(R.string.mode_win_suffix));
-                }
-
-                str.trimToSize();
-
-                if (gameMode == STATE_LOSE) winsInARow = 0;
-
-                message = str.toString();
-
-            }
-            */
         }
 
     }
@@ -445,11 +296,8 @@ public class DrawThread extends Thread {
 
         boolean flag = false;
 
-        //Rect rect = beeImage.getBounds();
-
         synchronized (runLock) {
             if ( beeArray[arrayIndex].containsPoint(x,y) ) {
-                //beeImage.setState(new int[]{android.R.attr.state_pressed});
                 beeArray[arrayIndex].setPressed(true);
                 beeArray[arrayIndex].takeDamage();
 
@@ -477,17 +325,9 @@ public class DrawThread extends Thread {
     public boolean releaseTouch() {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" releaseTouch" );
 
-        //beeImage.setState(new int[]{-android.R.attr.state_pressed});
-        beeArray[arrayIndex].setPressed(false);
+           beeArray[arrayIndex].setPressed(false);
 
-        /*
-        if ( (beeImage.getState())[0] == android.R.attr.state_pressed ){
-            beeImage.setState(new int[]{-android.R.attr.state_pressed});
-
-        }
-        */
-
-        return true;
+           return true;
     }
 
     /**
@@ -520,16 +360,10 @@ public class DrawThread extends Thread {
 
         Random r = new Random();
 
-        /*
-        while( !choose ){
-            arrayIndex = r.nextInt((max - min) + 1) + min;
-            choose = !beeArray[arrayIndex].isDead();
-        }
-        */
-
         for( int i = 0; choose && (i < ARRAY_SIZE); i++ ){
             arrayIndex = r.nextInt((max - min) + 1) + min;
             choose = beeArray[arrayIndex].isDead();
+
             if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose choose=" + choose);
             if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose arrayIndex=" + arrayIndex);
 
@@ -537,18 +371,6 @@ public class DrawThread extends Thread {
 
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" randomBeeChoose ends arrayIndex=" + arrayIndex);
 
-
-        /*
-        arrayIndex -= 1;
-
-        if( arrayIndex >= 0 ) {
-            choose = true;
-        } else {
-            arrayIndex = 0;
-            choose = false;
-
-        }
-        */
 
         return !choose;
     }
@@ -559,20 +381,14 @@ public class DrawThread extends Thread {
      * Detects the end-of-game and sets the UI to the next state.
      */
     private void updatePhysics() {
-        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" updatePhysics" );
+        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" updatePhysics" );
         long now = System.currentTimeMillis();
 
         if ( nextRefreshTime > now ) return;
 
         setBoardSize();
 
-
-
         //move direction
-
-        //if(horizontal) horizontal = Math.round(Math.random()) == 0;
-        //if(vertical) vertical = Math.round(Math.random()) == 0;
-
         horizontal = (Math.round(Math.random()) == 0);
         vertical = (Math.round(Math.random()) == 0);
 
@@ -596,11 +412,6 @@ public class DrawThread extends Thread {
         }
 
 
-        //beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
-        //beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
-
-        //beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
-
         beeArray[arrayIndex].setPosition(beeSpriteCenterX, beeSpriteCenterY);
 
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" updatePhysics  beeSpriteCenterX:" + beeSpriteCenterX +"  beeSpriteCenterY:" + beeSpriteCenterY);
@@ -612,10 +423,6 @@ public class DrawThread extends Thread {
 
         nextRefreshTime = now + REFRESH_STEP_MILLIS;;
 
-
-
-
-        //doStart();
     }
 
 
@@ -658,61 +465,6 @@ public class DrawThread extends Thread {
         String hitPoints = str.toString();
 
         canvas.drawText(hitPoints, 0, hitPoints.length(), left, top, paint);
-
-
-        //top = beeIconeHeight + beeIconeHeight + PADDING + PADDING + PADDING + (beeSpriteHeight/2);
-        //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doDraw  top=" + top );
-
-
-        //canvas.drawLine(boardLeft, boardTop, (boardLeft+boardWidth), boardTop, paint);
-        //canvas.drawLine(boardLeft, boardTop, boardLeft, (boardTop+boardHeight), paint);
-        //canvas.drawLine(boardLeft, (boardTop+boardHeight), (boardLeft+boardWidth), (boardTop+boardHeight), paint);
-        //canvas.drawLine((boardLeft+boardWidth), boardTop, (boardLeft+boardWidth), (boardTop+boardHeight), paint);
-
-        //Rect rectImg = new Rect(xLeft, yTop, xLeft + beeSpriteWidth, yTop + beeSpriteHeight);
-        //beeImageButton.bringToFront();
-        //beeImageButton.buildLayer();
-
-        //imageButton.setClipBounds(rectImg);
-        //beeImageButton.draw(canvas);
-
-        //beeImage.setBounds(xLeft, yTop, xLeft + beeSpriteWidth, yTop + beeSpriteHeight);
-
-        //beeImage.draw(canvas);
-
-
-
-        //scratchRectF.centerX();
-
-        /*
-        Resources res = context.getResources();
-        Bitmap img = BitmapFactory.decodeResource(res, R.drawable.bee_worker);
-        float top = canvasHeight - img.getHeight();
-        float left = canvasWidth/2 ;
-
-        canvas.drawBitmap(img, left, top, paint);
-        */
-
-        //beeSpriteWidth = beeImage.getIntrinsicWidth();
-        //beeSpriteHeight = beeImage.getIntrinsicHeight();
-
-        /*
-        int top = canvasHeight - droneImage.getIntrinsicHeight();
-        int left = canvasWidth/2 ;
-
-
-
-        droneImage.setBounds(left, top, left + droneImage.getIntrinsicWidth(), canvasHeight);
-        droneImage.draw(canvas);
-        */
-
-        //canvas.drawRect(scratchRectF, rectPaint);
-        //canvas.drawText(message, 0, message.length(), 300.0f, 300.0f, rectPaint);
-
-
-
-
-
 
     }
 

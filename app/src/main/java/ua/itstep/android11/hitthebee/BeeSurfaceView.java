@@ -1,15 +1,8 @@
 package ua.itstep.android11.hitthebee;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -18,8 +11,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.widget.ImageView;
+
 
 
 public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
@@ -38,11 +30,6 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
                 // завершаем работу потока
                 drawThread.setFlagRunning(false);
 
-                Activity base = (Activity) getContext();
-                //isFocused();
-                base.finish();
-
-
             }
 
         }
@@ -53,9 +40,8 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         public boolean onDown(MotionEvent event) {
             boolean flag = false;
             if (drawThread.touchItem((int)event.getX(), (int)event.getY())) {
-                //invalidate();
                 flag = true;
-                //resetTouchFeedback();
+
 
             }
 
@@ -123,8 +109,6 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
         if (drawThread != null) {
             drawThread.setSurfaceSize(this.getRight(), this.getBottom());
-            //drawThread.setDaemon(true);
-            //drawThread.setState(DrawThread.STATE_READY);
             drawThread.setFlagRunning(true);
             drawThread.doStart();
             drawThread.start();
@@ -164,50 +148,15 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             resetTouchFeedback();
         }
 
-        /*
-        if (action == MotionEvent.ACTION_UP) {
-            resetTouchFeedback();
-        }
-        */
-
-
-
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onTouchEvent "+ action + " at x=" + (int)event.getX() +
                ", y=" + (int)event.getY());
 
         return super.onTouchEvent(event) || this.gestureDetector.onTouchEvent(event);
 
-        /*
-        PointF current = new PointF(event.getX(), event.getY());
-        String action = "";
-
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                action = "ACTION_DOWN";
-                break;
-            case MotionEvent.ACTION_MOVE:
-                action = "ACTION_MOVE";
-                break;
-            case MotionEvent.ACTION_UP:
-                action = "ACTION_UP";
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                action = "ACTION_CANCEL";
-                break;
-        }
-        if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" onTouchEvent "+ action + " at x=" + current.x +
-               ", y=" + current.y);
-
-        return true;
-        */
-     }
+    }
 
     private void resetTouchFeedback() {
-
-        if(drawThread.releaseTouch()) {
-            //invalid()
-        }
+        drawThread.releaseTouch();
 
     }
 
