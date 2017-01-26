@@ -10,13 +10,13 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.util.Observable;
+
 
 /**
  * Created by Maksim Baydala on 16/01/17.
  */
 
-public abstract class Bee extends Observable {
+public abstract class Bee extends BeeObservable {
 
     protected int hitPoints;
     protected int damage;
@@ -167,6 +167,12 @@ public abstract class Bee extends Observable {
         }
     }
 
+
+    @Override
+    public void notifyObservers() {
+        super.notifyObservers();
+
+    }
 
 
 

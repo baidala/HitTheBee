@@ -409,6 +409,7 @@ public class DrawThread extends Thread {
         if( beeArray[arrayIndex].isDead() ){
             if(beeArray[arrayIndex].getUnitType() == Bee.QUEEN) {
                 //TODO beeArray[arrayIndex].notifyAll();  kill them all -> bee.kill();
+                beeArray[arrayIndex].notifyObservers();
             }
             //TODO changeImage to deadBee
             //TODO nextRound
