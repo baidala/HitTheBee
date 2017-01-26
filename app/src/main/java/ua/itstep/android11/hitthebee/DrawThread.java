@@ -431,7 +431,6 @@ public class DrawThread extends Thread {
                 beeArray[arrayIndex].setPressed(true);
                 beeArray[arrayIndex].takeDamage();
 
-
                 flag = true;
 
                 if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" touchItem HIT" );
@@ -597,9 +596,6 @@ public class DrawThread extends Thread {
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
-
-
-
 
         //draw a background
         canvas.drawColor(Color.RED);

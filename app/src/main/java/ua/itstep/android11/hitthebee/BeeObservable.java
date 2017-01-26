@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class BeeObservable   {
 
-    List<BeeObserver> observers = new ArrayList<BeeObserver>();
+    List<BeeObserver> observers = new ArrayList<>();
 
     public BeeObservable() {
     }
