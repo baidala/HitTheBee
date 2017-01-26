@@ -6,7 +6,7 @@ package ua.itstep.android11.hitthebee;
 
 public class Prefs {
     public static final String LOG_TAG = "HitTheBee >>>>>>>>>>";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
 
 
