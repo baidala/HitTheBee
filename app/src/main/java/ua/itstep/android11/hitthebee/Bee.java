@@ -85,8 +85,7 @@ public abstract class Bee extends BeeObservable {
     }
 
 
-    public void setPosition(int x, int y)
-    {
+    public void setPosition(int x, int y){
         //beeMatrix.setTranslate(x, y);
         //beeMatrix.mapRect(beeRect);
 
@@ -105,16 +104,14 @@ public abstract class Bee extends BeeObservable {
         if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" setPosition beeImageXLeft=" +beeImageXLeft +" beeImageYTop="+ beeImageYTop +" beeImageXRight="+ beeImageXRight +" beeImageYBottom="+ beeImageYBottom);
     }
 
-    public void setIconPosition(int x, int y)
-    {
+    public void setIconPosition(int x, int y) {
         //beeMatrix.setTranslate(x, y);
         //beeMatrix.mapRect(beeRect);
 
 
     }
 
-    public void setPressed(boolean pressed)
-    {
+    public void setPressed(boolean pressed){
         this.pressed = pressed;
         if( pressed ) {
             beeImage.setState( new int[] { android.R.attr.state_pressed } );
@@ -149,8 +146,7 @@ public abstract class Bee extends BeeObservable {
         return hitPoints;
     }
 
-    public void draw(Canvas canvas)
-    {
+    public void draw(Canvas canvas) {
         if( isDead() ) {
             deadImage.draw(canvas);
         } else {
@@ -158,14 +154,16 @@ public abstract class Bee extends BeeObservable {
         }
     }
 
-    public void drawIcon(Canvas canvas, float left, float top, @Nullable Paint paint)
-    {
+    public void drawIcon(Canvas canvas, float left, float top, @Nullable Paint paint) {
         if( isDead() ) {
             canvas.drawBitmap(beeIconHit, left, top, paint);
         } else {
             canvas.drawBitmap(beeIcon, left, top, paint);
         }
     }
+
+    public abstract void reset();
+
 
 
     @Override

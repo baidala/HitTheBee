@@ -1,6 +1,7 @@
 package ua.itstep.android11.hitthebee;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -90,7 +91,7 @@ public class DrawThread extends Thread {
 
     private static final int PADDING = 7;
 
-    //direction off a next move
+    //direction off next move
     private boolean horizontal= true;
     private boolean vertical = true;
 
@@ -158,14 +159,18 @@ public class DrawThread extends Thread {
         for(int i = 0; i < 5; i++) {
             beeWorker = new Worker(workerImage, workerIcon, workerIconHit, deadImage);
             beeArray[arrayIndex] = beeWorker;
+            beeQueen.addObserver(beeWorker);
             arrayIndex++;
         }
 
         for(int i = 0; i < 8; i++) {
             beeDrone = new Drone(droneImage, droneIcon, droneIconHit, deadImage);
             beeArray[arrayIndex] = beeDrone;
+            beeQueen.addObserver(beeDrone);
             arrayIndex++;
         }
+
+
 
 
 
@@ -252,14 +257,15 @@ public class DrawThread extends Thread {
      */
     public void doStart() {
         //if(Prefs.DEBUG) Log.d(Prefs.LOG_TAG, getClass().getSimpleName() +" doStart" );
-
+        boolean hasNext = randomBeeChoose();
 
         synchronized (surfaceHolder) {
 
 
-            if ( ! randomBeeChoose() ) {
-                Toast.makeText(context, R.string.message_game_over, Toast.LENGTH_SHORT).show();
-                setGameState(STATE_WIN); //exit
+            if ( ! hasNext ) {
+                Toast.makeText(context, R.string.mode_win_prefix, Toast.LENGTH_SHORT).show();
+                setGameState(STATE_WIN);
+                resetGame();
 
             } else {
 
@@ -309,6 +315,30 @@ public class DrawThread extends Thread {
         }
     }
 
+    private void resetGame() {
+        Toast.makeText(context, R.string.message_start, Toast.LENGTH_SHORT).show();
+
+        //resetHP
+
+        /*
+        for(int i = 0; i < ARRAY_SIZE; i++) {
+            beeArray[i].reset();
+
+        }
+        */
+
+        for (Bee beeUnit : beeArray) {
+            beeUnit.reset();
+        }
+
+        message = "";
+        arrayIndex = 0;
+        round = 0;
+
+        doStart();
+
+    }
+
     private void setBoardSize() {
         boardLeft = beeSpriteWidth/2;
         boardTop = (PADDING * 3) + (beeIconeHeight*2) + beeSpriteHeight/2;
@@ -344,6 +374,9 @@ public class DrawThread extends Thread {
                 b.putInt("STATE", STATE_WIN);
                 message.setData(b);
                 handler.sendMessage(message);
+
+
+
             }
 
 
@@ -408,11 +441,9 @@ public class DrawThread extends Thread {
 
         if( beeArray[arrayIndex].isDead() ){
             if(beeArray[arrayIndex].getUnitType() == Bee.QUEEN) {
-                //TODO beeArray[arrayIndex].notifyAll();  kill them all -> bee.kill();
                 beeArray[arrayIndex].notifyObservers();
             }
-            //TODO changeImage to deadBee
-            //TODO nextRound
+             //nextRound
             doStart();
         }
 
@@ -658,6 +689,12 @@ public class DrawThread extends Thread {
 
     }
 
+
+    public void pause() {
+        synchronized (surfaceHolder) {
+            if (gameMode == STATE_RUNNING) setGameState(STATE_PAUSE);
+        }
+    }
 
 
 

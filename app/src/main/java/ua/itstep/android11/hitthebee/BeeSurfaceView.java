@@ -1,6 +1,7 @@
 package ua.itstep.android11.hitthebee;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +37,10 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
             if ( m.getData().getInt("STATE") == GAME_OVER){
                 // завершаем работу потока
                 drawThread.setFlagRunning(false);
+
+                Activity base = (Activity) getContext();
+                //isFocused();
+                base.finish();
 
 
             }
@@ -203,6 +208,15 @@ public class BeeSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
         if(drawThread.releaseTouch()) {
             //invalid()
         }
+
+    }
+
+
+    public void onPause() {
+        drawThread.pause();
+    }
+
+    public void onResume() {
 
     }
 

@@ -54,13 +54,13 @@ public class GameBoardActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //mBeeSurfaceView.onPause();
+        beeSurfaceView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //mBeeSurfaceView.onResume();
+        beeSurfaceView.onResume();
     }
 
 }

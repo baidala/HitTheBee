@@ -24,4 +24,10 @@ public class Worker extends Bee implements BeeObserver {
         //TODO
         this.hitPoints = 0 ;
     }
+
+    @Override
+    public void reset() {
+        this.hitPoints = HIT_POINTS;
+    }
+
 }

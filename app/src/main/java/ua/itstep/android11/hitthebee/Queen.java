@@ -19,5 +19,10 @@ public class Queen extends Bee {
 
     }
 
+    @Override
+    public void reset() {
+        this.hitPoints = HIT_POINTS;
+    }
+
 
 }
