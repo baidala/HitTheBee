@@ -3,11 +3,13 @@ package ua.itstep.android11.hitthebee;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import java.util.Observable;
+
 /**
  * Created by Maksim Baydala on 16/01/17.
  */
 
-public class Drone extends Bee {
+public class Drone extends Bee implements BeeObserver {
 
     private static final int HIT_POINTS = 50 ;
     private static final int DAMAGE = 12 ;
@@ -17,4 +19,8 @@ public class Drone extends Bee {
     }
 
 
+    @Override
+    public void update(Observable observable, Object data) {
+        //TODO
+    }
 }
