@@ -257,54 +257,53 @@ public class DrawThread extends Thread {
 
             if ( ! randomBeeChoose() ) {
                 Toast.makeText(context, R.string.message_game_over, Toast.LENGTH_SHORT).show();
-                //setGameState(STATE_WIN); //exit
-                return;
+                setGameState(STATE_WIN); //exit
+
+            } else {
+
+                //increment level
+                round += 1;
+
+                Toast.makeText(context, "Round " + round, Toast.LENGTH_SHORT).show();
+
+                //random choose direction
+                horizontal = Math.round(Math.random()) == 0;
+                vertical = Math.round(Math.random()) == 0;
+
+                //init  toolbar/icons
+                setBoardSize();
+
+
+                //scratchRectF.set(330.0f, 100.0f, 400.0f, 200.0f);
+                //beeImage.setState( new int[] { -android.R.attr.state_pressed } );
+
+                //imageButton.setImageResource(R.drawable.bee_worker_selector);
+                //imageButton.setBackground(beeImage);
+
+                //scratchRectF.set();
+
+
+                beeSpriteWidth = beeArray[arrayIndex].getWidth();
+                beeSpriteHeight = beeArray[arrayIndex].getHeight();
+
+                // pick a convenient initial location for the sprite
+                beeSpriteCenterX = canvasWidth / 2;
+                beeSpriteCenterY = (canvasHeight / 2) - beeSpriteHeight;
+
+                beeArray[arrayIndex].setPosition(beeSpriteCenterX, beeSpriteCenterY);
+
+                //beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
+                //beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
+
+
+                //beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
+
+
+                nextRefreshTime = System.currentTimeMillis() + REFRESH_STEP_MILLIS;
+
+
+                setGameState(STATE_RUNNING);
             }
-
-            //increment level
-            round += 1;
-
-            Toast.makeText(context, "Round "+ round, Toast.LENGTH_SHORT).show();
-
-            //random choose direction
-            horizontal = Math.round(Math.random()) == 0;
-            vertical = Math.round(Math.random()) == 0;
-
-            //init  toolbar/icons
-            setBoardSize();
-
-
-            //scratchRectF.set(330.0f, 100.0f, 400.0f, 200.0f);
-            //beeImage.setState( new int[] { -android.R.attr.state_pressed } );
-
-            //imageButton.setImageResource(R.drawable.bee_worker_selector);
-            //imageButton.setBackground(beeImage);
-
-            //scratchRectF.set();
-
-
-
-
-            beeSpriteWidth = beeArray[arrayIndex].getWidth();
-            beeSpriteHeight = beeArray[arrayIndex].getHeight();
-
-            // pick a convenient initial location for the sprite
-            beeSpriteCenterX = canvasWidth / 2;
-            beeSpriteCenterY = (canvasHeight / 2) - beeSpriteHeight;
-
-            beeArray[arrayIndex].setPosition(beeSpriteCenterX, beeSpriteCenterY);
-
-            //beeSpriteXLeft = (int) beeSpriteCenterX - beeSpriteWidth / 2;
-            //beeSpriteYTop = (int) beeSpriteCenterY + beeSpriteHeight / 2;
-
-
-            //beeImage.setBounds(beeSpriteXLeft, beeSpriteYTop, beeSpriteXLeft + beeSpriteWidth, beeSpriteYTop + beeSpriteHeight);
-
-
-            nextRefreshTime = System.currentTimeMillis() + REFRESH_STEP_MILLIS;
-
-
-            setGameState(STATE_RUNNING);
         }
     }
 
@@ -497,8 +496,8 @@ public class DrawThread extends Thread {
         //if(horizontal) horizontal = Math.round(Math.random()) == 0;
         //if(vertical) vertical = Math.round(Math.random()) == 0;
 
-        horizontal = vertical || horizontal && (Math.round(Math.random()) == 0);
-        vertical = horizontal || vertical && (Math.round(Math.random()) == 0);
+        horizontal = (Math.round(Math.random()) == 0);
+        vertical = (Math.round(Math.random()) == 0);
 
         //choose random x y
         beeSpriteCenterX += ( horizontal ? 10 : -10 );
