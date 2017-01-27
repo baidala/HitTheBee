@@ -1,6 +1,7 @@
 # HitTheBee
 Ciklum technical task for Android (c)
-https://docs.google.com/document/d/1MZf46PykjshyeXbyA-TSxRFZfX01jItZ4sneE7CDUE4/edit#bookmark=id.gjdgxs
+
+https://docs.google.com/document/d/1yCPhbNt7Kducmnmeti04BEhueAL_MOGOehFrX6sf6pg/edit?usp=sharing
 
 Bees: 
 There are three types of bees in this game:  
